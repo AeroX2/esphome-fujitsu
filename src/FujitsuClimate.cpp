@@ -31,10 +31,10 @@ void FujitsuClimate::setup() {
     this->pendingUpdate = false;
     memcpy(&(this->sharedState), this->heatPump.getCurrentState(),
            sizeof(FujiFrame));
-    this->heatPump.connect(&Serial2, true);
+    this->heatPump.connect(&Serial1, true, 4, 3);
     ESP_LOGD("fuji", "starting task");
     xTaskCreatePinnedToCore(serialTask, "FujiTask", 10000, (void *)this,
-                            configMAX_PRIORITIES - 1, &(this->taskHandle), 1);
+                            1, &(this->taskHandle), 1);
 }
 
 optional<climate::ClimateMode> FujitsuClimate::fujiToEspMode(
@@ -132,9 +132,9 @@ void FujitsuClimate::updateState() {
 
         // Target temp
         if (this->sharedState.temperature != this->target_temperature) {
-            ESP_LOGD("fuji", "ctrl temp %d vs my temp %d",
+            ESP_LOGD("fuji", "ctrl temp %d vs my temp %f",
                      this->sharedState.temperature, this->target_temperature);
-            this->target_temperature = this->sharedState.temperature;
+            this->target_temperature = static_cast<byte>(this->sharedState.temperature);
             updated = true;
         }
 
@@ -266,7 +266,7 @@ climate::ClimateTraits FujitsuClimate::traits() {
     });
 
     traits.set_visual_temperature_step(1);
-    traits.set_visual_min_temperature(16);
+    traits.set_visual_min_temperature(18);
     traits.set_visual_max_temperature(30);
 
     traits.set_supported_fan_modes(

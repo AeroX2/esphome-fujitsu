@@ -1,15 +1,22 @@
 esphome:
   name: fujitsu
-  platform: ESP32
-  board: nodemcu-32s
+  platform: esp32
+  board: esp32-c3-devkitm-1
   includes:
-    - FujitsuClimate.h
-    - FujitsuClimate.cpp
-    - FujiHeatPump.h
-    - FujiHeatPump.cpp
+    - src/FujitsuClimate.h
+    - src/FujitsuClimate.cpp
+    - src/FujiHeatPump.h
+    - src/FujiHeatPump.cpp
+  platformio_options:
+    build_flags:
+      -D ARDUINO_USB_MODE=1
+      -D ARDUINO_USB_CDC_ON_BOOT=1
+      -D ARDUINO_ESP32C3_DEV=1
 
 # Enable logging
 logger:
+  baud_rate: 0
+  level: DEBUG
 
 # Enable Home Assistant API
 api:
@@ -22,13 +29,13 @@ ota:
   password: ""
 
 wifi:
-  ssid: "your wifi ssid"
-  password: "your wifi password"
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "Fujitsu"
-    password: "a password for cative portal"
+    password: "a fancy password"
 
 
 captive_portal:

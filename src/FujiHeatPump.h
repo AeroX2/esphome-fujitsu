@@ -50,7 +50,7 @@ const byte kControllerTempOffset = 1;
 
 typedef struct FujiFrames {
     byte onOff = 0;
-    byte temperature = 16;
+    byte temperature = 18;
     byte acMode = 0;
     byte fanMode = 0;
     byte acError = 0;
